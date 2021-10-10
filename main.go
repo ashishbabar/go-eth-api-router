@@ -5,12 +5,18 @@ import (
 
 	"github.com/ashishbabar/go-eth-api-router/handlers"
 	"github.com/gorilla/mux"
+	"github.com/spf13/viper"
 )
 
+func init() {
+	viper.SetDefault("port", "4397")
+}
 func main() {
+	zapLogger := getLogger()
 	router := mux.NewRouter()
-	router.HandleFunc("/contract/{contractAddress}", handlers.ContractHandler)
+	port := viper.GetString("port")
+	router.HandleFunc("/contract/{contractAddress}", handlers.ContractHandler(zapLogger))
 	http.Handle("/", router)
-
-	http.ListenAndServe(":4397", router)
+	zapLogger.Info("Starting routes API at " + port)
+	http.ListenAndServe(":"+port, router)
 }
