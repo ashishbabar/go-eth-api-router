@@ -1,13 +1,12 @@
 FROM golang:1.16-alpine
-WORKDIR /app
+WORKDIR $GOPATH/src/github.com/ashishbabar/go-eth-api-router
 
-COPY go.mod ./
-COPY go.sum ./
+COPY . .
 
-RUN go mod download
+RUN go get -d -v ./...
 
-COPY *.go ./
+RUN go install -v ./...
 
-RUN go build -o /go-eth-router
+EXPOSE 4397
 
-CMD [ "/go-eth-router" ]
+CMD [ "go-eth-api-router" ]
